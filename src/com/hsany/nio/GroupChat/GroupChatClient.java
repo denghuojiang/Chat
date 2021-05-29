@@ -1,18 +1,13 @@
 package com.hsany.nio.GroupChat;
 
-import javax.xml.validation.SchemaFactoryConfigurationError;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.http.WebSocketHandshakeException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class GroupChatClient {
@@ -44,6 +39,7 @@ public class GroupChatClient {
         }
     }
 
+
     public void readInfo() {
         try {
             int readChannels = selector.select();
@@ -57,6 +53,7 @@ public class GroupChatClient {
                         channel.read(buffer);
                         System.out.println(new String(buffer.array()).trim());
                     }
+                    keys.remove();
                 }
             } else {
                 System.out.println("没有可用的通道，，，");
@@ -69,7 +66,14 @@ public class GroupChatClient {
     public static void main(String[] args) {
 
         GroupChatClient groupChatClient = new GroupChatClient();
-        new Thread() {
+        new Thread(()->{ groupChatClient.readInfo();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+       /* new Thread() {
             public void run() {
                 while (true) {
                     groupChatClient.readInfo();
@@ -80,7 +84,7 @@ public class GroupChatClient {
                     }
                 }
             }
-        }.start();
+        }.start();*/
         Scanner in = new Scanner(System.in);
         while (in.hasNextLine()){
             String s = in.nextLine();
