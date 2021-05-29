@@ -23,17 +23,17 @@ public class NIOSendClient {
         long size = fileChannel.size();
         System.out.println(size);
         int position = 0;
-        long count = 0;
-        count = size % (1024 * 1024 * 8) == 0 ? size / (1024 * 1024 * 8) : size / (1024 * 1024 * 8) + 1;
+        long count = size % (1024 * 1024 * 8) == 0 ? size / (1024 * 1024 * 8) : size / (1024 * 1024 * 8) + 1;
         for (long i = 0; i < count; i++) {
             long length = 1024 * 1024 * 8;
             if (i == count - 1) {
                 length = size % (1024 * 1024 * 8);
             }
-            System.out.println("第"+i+"次传输");
-            fileChannel.transferTo( position, length,socketChannel);
+            System.out.println("第" + i + "次传输,传输数据" + length);
+            fileChannel.transferTo(position, length, socketChannel);
+            position += 1024 * 1024 * 8;
         }
-        System.out.println("花费时间"+(System.currentTimeMillis()-startTime));
+        System.out.println("花费时间" + (System.currentTimeMillis() - startTime));
         socketChannel.close();
         fileChannel.close();
     }

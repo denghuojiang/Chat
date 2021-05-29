@@ -10,18 +10,21 @@ public class NIOReceiveServer {
     public static void main(String[] args) throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(8080));
-        while (true){
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        while (true) {
             SocketChannel accept = serverSocketChannel.accept();
-            ByteBuffer buffer = ByteBuffer.allocate(512);
-            int readcount =0;
-            while (readcount!=-1){
+            int readcount = 0;
+            int count = 0;
+            while (readcount != -1) {
                 try {
-                    readcount =  accept.read(buffer);
+                    readcount = accept.read(buffer);
+                    count+=readcount;
                 } catch (IOException e) {
-                    break;
+                   break;
                 }
                 buffer.rewind();
             };
+            System.out.println(count);
         }
     }
 }
